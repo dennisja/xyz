@@ -1,0 +1,14 @@
+#IDE
+.vscode/
+
+# test coverage
+.coverage
+
+# OSX
+.DS_Store
+
+# Other
+.env
+
+# python
+__pycache__/
