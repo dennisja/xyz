@@ -17,6 +17,8 @@ flask-graphql = "*"
 flask-migrate = "*"
 flask-script = "*"
 python-dotenv = "*"
+schema = "*"
+email-validator = "*"
 
 [requires]
 python_version = "3.8"
