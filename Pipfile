@@ -7,15 +7,16 @@ verify_ssl = true
 black = "*"
 
 [packages]
-fastapi = "*"
 graphene = "*"
-starlette = "*"
 flask = "*"
 flask-sqlalchemy = "*"
 flask-cors = "*"
 graphene-sqlalchemy = "*"
 psycopg2-binary = "*"
 flask-graphql = "*"
+flask-migrate = "*"
+flask-script = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"

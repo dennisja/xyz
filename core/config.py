@@ -3,6 +3,9 @@ import os
 from typing import Dict
 
 from flask import Flask
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class Config:
