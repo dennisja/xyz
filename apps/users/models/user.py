@@ -1,4 +1,5 @@
 from enum import Enum
+from datetime import datetime
 
 from sqlalchemy.orm import validates
 
@@ -17,7 +18,7 @@ class UserModel(BaseModelMixin, db.Model):
     phone = db.Column(db.String(20), unique=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True)
-    joined = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
+    joined = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
     registration_method = db.Column(
         db.Enum(RegistrationMethod, name="registration_method_enum"),
