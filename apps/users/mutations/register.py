@@ -7,9 +7,13 @@ from email_validator import validate_email
 from sqlalchemy import or_
 
 from apps.users.models.user import UserModel, RegistrationMethod
+from apps.users.models.verification import VerificationCodeModel
 from apps.users.types import User
+from core.utils import generate_random_code
 
 NON_WORD_CHARACTERS_REGEX = re.compile(r"\W+")
+
+VERIFICATION_CODE_LENGTH = 6
 
 no_non_word_characters = lambda word: not NON_WORD_CHARACTERS_REGEX.search(word)
 
@@ -112,9 +116,12 @@ class CreateUser(graphene.Mutation):
         )
         user.save()
 
-        # TODO: implement verification here
-        # generate verification code for the user
-        # send them an email if they registered by email
-        # TODO: send them an SMS if they registered by phone
-        # TODO: if they registered by a social auth provider just do nothing
+        code = generate_random_code(VERIFICATION_CODE_LENGTH)
+        verification_code = VerificationCodeModel(code=code, user_id=user.id)
+        verification_code.save()
+
+        # send them a verification email if they registered by email
+
+        # TODO: send them a verification SMS if they registered by phone
+        # TODO: if they registered by a social auth provider (send credentials to either their phone or email)
         return CreateUser(create_success=True, user=user)
