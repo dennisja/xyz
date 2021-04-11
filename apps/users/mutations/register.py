@@ -1,21 +1,42 @@
 import re
+from urllib import parse
 
 import graphene
 import schema
 from graphql import GraphQLError
 from email_validator import validate_email
 from sqlalchemy import or_
+from flask import request
 
 from apps.users.models.user import UserModel, RegistrationMethod
 from apps.users.models.verification import VerificationCodeModel
 from apps.users.types import User
 from core.utils import generate_random_code
+from core.email import EmailClient
 
 NON_WORD_CHARACTERS_REGEX = re.compile(r"\W+")
 
 VERIFICATION_CODE_LENGTH = 6
 
 no_non_word_characters = lambda word: not NON_WORD_CHARACTERS_REGEX.search(word)
+
+# TODO: create an email builder to handle this
+REGISTRATION_EMAIL = """
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verification Code</title>
+  </head>
+  <body>
+    <div>Your Verification code is {code}</div>
+    You can as well verify your account by clicking the following link
+    <a href="{verification_url}">Verify Your account</a>
+  </body>
+</html>
+"""
 
 
 def get_valid_email(email: str):
@@ -121,6 +142,15 @@ class CreateUser(graphene.Mutation):
         verification_code.save()
 
         # send them a verification email if they registered by email
+        client = EmailClient()
+        url = parse.urlparse(request.url)
+        origin = f"{url.scheme}://{url.hostname}{':'+str(url.port) if url.port else ''}"
+        client.send(
+            REGISTRATION_EMAIL.format(
+                code=code, verification_url=f"{origin}/verify?code={code}"
+            ),
+            user.email,
+        )
 
         # TODO: send them a verification SMS if they registered by phone
         # TODO: if they registered by a social auth provider (send credentials to either their phone or email)

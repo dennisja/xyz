@@ -3,6 +3,7 @@ import graphene
 from apps.users.models.user import UserModel
 from apps.users.types import User
 from apps.users.mutations.register import CreateUser
+from core.email import EmailClient
 
 
 class UserQueries(graphene.ObjectType):

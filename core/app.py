@@ -7,6 +7,7 @@ from flask_graphql import GraphQLView
 from core.config import CONFIGS
 from core.db import db
 from core.schema import schema
+from core.email import EmailClient
 
 
 def create_app(environment: Optional[str] = "development") -> Flask:
@@ -17,6 +18,7 @@ def create_app(environment: Optional[str] = "development") -> Flask:
     CORS(app)
     app_config.init_app(app)
     db.init_app(app)
+    EmailClient.init_app(app)
 
     app.add_url_rule(
         "/notify",
